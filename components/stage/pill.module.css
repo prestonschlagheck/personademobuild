@@ -1,0 +1,39 @@
+/* Persona's dashboard pill: white, button border, 36px tall, 15px at weight 590. */
+.pill {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 16px;
+  border: 1px solid var(--color-button-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-accent);
+  font-size: 15px;
+  font-weight: 590;
+  letter-spacing: -0.2px;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.12s var(--ease-standard), border-color 0.12s var(--ease-standard);
+}
+
+@media (hover: hover) {
+  .pill:hover {
+    background: var(--color-sunken);
+  }
+}
+
+.pill:active {
+  background: var(--color-tile);
+}
+
+.pill:disabled {
+  opacity: 0.35;
+  cursor: default;
+}

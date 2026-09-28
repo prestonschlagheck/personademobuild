@@ -1,0 +1,17 @@
+/*
+  iOS 26 Liquid Glass: a nearly clear face so what is behind reads through it, a crisp specular rim where
+  light catches the top left and bottom right, and the lift shadow. useLiquidGlass swaps the frosted
+  backdrop below for real refraction where the browser can render it.
+*/
+.liquid {
+  background: var(--color-glass-clear);
+  box-shadow: var(--shadow-glass-liquid);
+  -webkit-backdrop-filter: blur(8px) saturate(180%);
+  backdrop-filter: blur(8px) saturate(180%);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .liquid {
+    background: var(--color-glass-solid);
+  }
+}

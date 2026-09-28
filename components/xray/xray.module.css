@@ -1,0 +1,117 @@
+/* Scrolls without a visible bar, like an iOS list at rest. */
+.scroll {
+  scrollbar-width: none;
+}
+
+.scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* A brief tint behind a row whose value just changed. */
+.flash {
+  position: absolute;
+  inset: 0 -8px;
+  z-index: -1;
+  border-radius: 8px;
+  background: var(--color-tile);
+  opacity: 0;
+  pointer-events: none;
+  animation: flash 1.6s var(--ease-out);
+}
+
+@keyframes flash {
+  0%,
+  25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* The phone and narrow-window sheet. A modal <dialog> gives focus trapping and Escape for free. */
+.dialog {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  background: transparent;
+}
+
+.dialog::backdrop {
+  background: transparent;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--color-heading) 38%, transparent);
+}
+
+.sheet {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  max-width: 560px;
+  height: min(86dvh, 820px);
+  margin-inline: auto;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  border-radius: 16px 16px 0 0;
+  background: var(--color-surface);
+  box-shadow: 0 -12px 40px color-mix(in srgb, var(--color-accent) 18%, transparent);
+}
+
+.grabber {
+  display: flex;
+  flex: none;
+  justify-content: center;
+  padding: 8px 0 2px;
+  cursor: grab;
+  touch-action: none;
+}
+
+.grabber::before {
+  content: "";
+  width: 36px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--color-line-strong);
+}
+
+/* A step's pill (--pill-width). */
+.step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 24px;
+  border: 1px solid var(--color-line-strong);
+  border-radius: 999px;
+  color: var(--color-ink-soft);
+  opacity: 0.55;
+  transition:
+    background-color 0.2s var(--ease-standard),
+    border-color 0.2s var(--ease-standard),
+    color 0.2s var(--ease-standard),
+    opacity 0.2s var(--ease-standard);
+}
+
+.step svg {
+  width: 12px;
+  height: 12px;
+}
+
+.stepDone {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-surface);
+  opacity: 1;
+}

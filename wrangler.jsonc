@@ -1,0 +1,34 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "persona-demo",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": { "directory": ".open-next/assets", "binding": "ASSETS" },
+  // The Durable Objects wake the app through this to settle a session's timers.
+  "services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "persona-demo" }],
+  "images": { "binding": "IMAGES" },
+  "durable_objects": {
+    "bindings": [
+      { "name": "SESSIONS", "class_name": "SessionObject" },
+      { "name": "LIMITS", "class_name": "LimiterObject" }
+    ]
+  },
+  // The archive every session object copies its writes to (d1/migrations).
+  "d1_databases": [
+    {
+      "binding": "ARCHIVE",
+      "database_name": "persona-demo-archive",
+      "database_id": "a92bd8bd-1428-476f-b715-548b803f3ef6",
+      "migrations_dir": "d1/migrations"
+    }
+  ],
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["SessionObject", "OAuthStateObject"] },
+    { "tag": "v2", "new_sqlite_classes": ["LimiterObject"] },
+    // Gmail link states moved into each session's own object, so the per-state pointer objects are gone.
+    { "tag": "v3", "deleted_classes": ["OAuthStateObject"] }
+  ],
+  "vars": { "STORE": "durable", "APP_ENV": "production" },
+  "observability": { "enabled": true }
+}

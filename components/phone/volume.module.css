@@ -1,0 +1,54 @@
+/*
+  Hit areas over the frame's volume up and down, in the 435 x 906 frame's own geometry (iphone-frame.svg,
+  "Volume up" and "Volume down"), a little wider than the metal so they are easy to find.
+*/
+.button {
+  position: absolute;
+  left: -0.5%;
+  z-index: 2;
+  width: 3.2%;
+  height: 7.366%;
+  border-radius: 3px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.12s var(--ease-standard);
+}
+
+.button[data-key="up"] {
+  top: 28.807%;
+}
+
+.button[data-key="down"] {
+  top: 38.082%;
+}
+
+.button:active {
+  background: #00000014;
+}
+
+/* Beside the buttons, inside the screen: from the top of volume up to the bottom of volume down, in points. */
+.hud {
+  position: absolute;
+  top: calc(var(--pt) * 243);
+  left: calc(var(--pt) * 9);
+  z-index: 60;
+  width: calc(var(--pt) * 12);
+  height: calc(var(--pt) * 153);
+  overflow: hidden;
+  border-radius: 999px;
+  background: #ffffff59;
+  box-shadow: var(--shadow-glass-liquid);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  backdrop-filter: blur(12px) saturate(180%);
+  pointer-events: none;
+}
+
+.hudFill {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: calc(var(--value) * 100%);
+  background: var(--color-accent);
+  transition: height 0.18s var(--ease-standard);
+}
+

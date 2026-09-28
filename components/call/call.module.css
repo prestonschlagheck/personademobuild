@@ -1,0 +1,201 @@
+/* Call screens, the island live activity and message banners. All lengths are iOS points. */
+
+/* The iOS call backdrop for a contact without a poster: a flat neutral gray that settles a shade darker toward the bottom. */
+.backdrop {
+  background: linear-gradient(180deg, #8e8e93, #6c6c70);
+}
+
+.mark {
+  width: calc(var(--pt) * 520);
+  left: 50%;
+  top: 46%;
+  transform: translate(-50%, -50%);
+}
+
+/* The caller, top left: the contact photo, then the status line over the name. */
+.header {
+  margin-top: calc(var(--pt) * 14);
+  padding-inline: calc(var(--pt) * 22);
+  column-gap: calc(var(--pt) * 14);
+}
+
+/* No saved contact: no photo to anchor a left edge to, so iOS centers the number instead, a little further down. */
+.headerUnsaved {
+  margin-top: calc(var(--pt) * 64);
+  padding-inline: calc(var(--pt) * 22);
+}
+
+.avatar {
+  width: calc(var(--pt) * 62);
+  height: calc(var(--pt) * 62);
+}
+
+/* iOS 26 in-call name: SF Display bold at 34pt, tracked in as large titles are. */
+.name {
+  font-size: calc(var(--pt) * 34);
+  line-height: calc(var(--pt) * 40);
+  letter-spacing: calc(var(--pt) * 0.4);
+  font-weight: 700;
+  text-wrap: balance;
+}
+
+/* The digits typed on the keypad take the header's place, in the light display weight iOS uses. */
+.digits {
+  margin-top: calc(var(--pt) * 22);
+  font-size: calc(var(--pt) * 34);
+  line-height: calc(var(--pt) * 40);
+  font-weight: 300;
+  letter-spacing: calc(var(--pt) * 1);
+}
+
+/* The in-call controls. A short phone screen (an iPhone SE or mini with Safari's bars showing) tightens the
+   rows so the grid still fits. On the framed device the ratio never changes. */
+.controls {
+  margin-bottom: calc(var(--pt) * 44);
+  padding-inline: calc(var(--pt) * 40);
+  row-gap: calc(var(--pt) * 22);
+}
+
+.keypad {
+  margin-bottom: calc(var(--pt) * 44);
+  padding-inline: calc(var(--pt) * 52);
+  row-gap: calc(var(--pt) * 16);
+}
+
+@container (aspect-ratio > 402 / 700) {
+  .controls,
+  .keypad {
+    margin-bottom: calc(var(--pt) * 16);
+    row-gap: calc(var(--pt) * 10);
+  }
+}
+
+/* iOS 26 Liquid Glass button: a clear face over the backdrop with a specular rim. A toggle that is on turns solid white. */
+.glass {
+  background: rgb(255 255 255 / 0.2);
+  box-shadow:
+    inset calc(var(--pt) * 1) calc(var(--pt) * 1) calc(var(--pt) * 0.5) calc(var(--pt) * -0.5) rgb(255 255 255 / 0.7),
+    inset calc(var(--pt) * -1) calc(var(--pt) * -1) calc(var(--pt) * 0.5) calc(var(--pt) * -0.5) rgb(255 255 255 / 0.4),
+    inset 0 0 0 calc(var(--pt) * 0.5) rgb(255 255 255 / 0.3);
+  backdrop-filter: blur(calc(var(--pt) * 12)) saturate(150%);
+  transition:
+    background-color 140ms var(--ease-out),
+    color 140ms var(--ease-out);
+}
+
+.glass[aria-pressed="true"],
+[aria-pressed="true"] > .glass {
+  background: var(--color-on-dark);
+  color: var(--color-ink);
+}
+
+/* iOS's end call red, a touch deeper than the system red so white reads on it. */
+.end {
+  background: #e0140f;
+}
+
+.round {
+  width: calc(var(--pt) * 72);
+  height: calc(var(--pt) * 72);
+}
+
+.key {
+  width: calc(var(--pt) * 78);
+  height: calc(var(--pt) * 78);
+}
+
+.keyDigit {
+  font-size: calc(var(--pt) * 34);
+  line-height: calc(var(--pt) * 36);
+  font-weight: 400;
+}
+
+.keyLetters {
+  font-size: calc(var(--pt) * 10);
+  line-height: calc(var(--pt) * 12);
+  font-weight: 600;
+  letter-spacing: calc(var(--pt) * 2);
+}
+
+.field {
+  font-size: calc(var(--pt) * 16);
+}
+
+/* An iOS 26 menu over the call: frosted light glass with dark text, so it reads over the controls under it. */
+.popover {
+  background: rgb(255 255 255 / 0.86);
+  color: var(--color-ink);
+  box-shadow: 0 calc(var(--pt) * 8) calc(var(--pt) * 30) rgb(0 0 0 / 0.18);
+  backdrop-filter: blur(calc(var(--pt) * 20)) saturate(180%);
+}
+
+.menu {
+  width: calc(var(--pt) * 250);
+  border-radius: calc(var(--pt) * 22);
+}
+
+/*
+  The compact live activity. The frame draws the island (124 x 36 pt, 14 pt from the top, centered) above the
+  screen, so the pill runs underneath it and only its ends show. Both ends reach 40 pt past the island and
+  keep 11 pt from the pill's rounded edge: the timer leading, the waveform trailing, one width each, so the
+  pill sits symmetric around the camera. The status bar drops its cellular and Wi-Fi glyphs meanwhile, as iOS does.
+*/
+.island {
+  top: calc(var(--pt) * 14);
+  left: calc(50% - var(--pt) * 102);
+  width: calc(var(--pt) * 204);
+  height: calc(var(--pt) * 36);
+  padding-inline: calc(var(--pt) * 11);
+}
+
+.islandEnd {
+  width: calc(var(--pt) * 29);
+}
+
+.timer {
+  font-size: calc(var(--pt) * 13);
+  line-height: calc(var(--pt) * 16);
+  letter-spacing: calc(var(--pt) * -0.1);
+}
+
+.wave {
+  height: calc(var(--pt) * 14);
+  gap: calc(var(--pt) * 2.8);
+}
+
+/*
+  Each bar grows in height, never by scale, so its ends stay fully round at every level: a dot at rest (as iOS
+  draws a silent line), a capsule at full height.
+*/
+.bar {
+  --level: 0;
+  width: calc(var(--pt) * 2.6);
+  height: calc(var(--pt) * 2.6 + (100% - var(--pt) * 2.6) * var(--level));
+}
+
+/* The expanded presentation grows around the island, so its content sits below the sensors. */
+.expanded {
+  top: calc(var(--pt) * 14);
+  left: calc(var(--pt) * 21);
+  right: calc(var(--pt) * 21);
+  height: calc(var(--pt) * 78);
+  border-radius: calc(var(--pt) * 40);
+  padding-top: calc(var(--pt) * 40);
+  transform-origin: 50% calc(var(--pt) * 18);
+}
+
+.banner {
+  top: calc(var(--pt) * 56);
+  border-radius: calc(var(--pt) * 24);
+}
+
+.appIcon {
+  border-radius: calc(var(--pt) * 9);
+}
+
+/* On a real phone: a 16px floor so iOS Safari never zooms the page when the field takes focus. */
+@media (pointer: coarse) and (max-width: 500px) {
+  .field {
+    font-size: max(16px, calc(var(--pt) * 16));
+  }
+}

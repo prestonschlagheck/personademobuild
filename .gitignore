@@ -1,0 +1,30 @@
+# env
+.env*
+!.env.example
+
+# dependencies and build output
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# os
+.DS_Store
+
+# test output
+coverage/
+test-results/
+playwright-report/
+
+# cloudflare
+.open-next/
+.wrangler/
+.dev.vars*
+
+# Live eval output stays local.
+tests/live/REPORT.md
+tests/live/REPORT.partial.md
+
+# local session logs from next dev (lib/server/dev-log.ts)
+.logs/

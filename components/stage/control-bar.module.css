@@ -1,0 +1,223 @@
+/* Persona's marketing glass (Persona-Brand.md §7). */
+.glass {
+  border: 1px solid var(--color-glass);
+  background: var(--color-glass);
+  box-shadow: var(--shadow-glass);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  backdrop-filter: blur(28px) saturate(190%);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass {
+    background: var(--color-glass-solid);
+  }
+}
+
+/* 4px around every segment, and a segment radius of the bar's 22px less that 4px, so they are concentric. */
+.bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  height: 44px;
+  padding: 4px;
+}
+
+/*
+  With the logs docked (data-dock on the stage) the panel hangs from the bar: the same width, square where they
+  meet, and no lift shadow of its own, so the two read as one piece of glass. Before hydration the default applies.
+*/
+:global([data-dock="open"]) .bar {
+  width: var(--dock-width);
+  border-radius: 22px 22px 0 0;
+  box-shadow: var(--shadow-glass-liquid-top);
+}
+
+.segment {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  color: var(--color-accent);
+  font-size: 14px;
+  font-weight: 590;
+  letter-spacing: -0.2px;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 0.14s var(--ease-standard),
+    box-shadow 0.14s var(--ease-standard),
+    color 0.14s var(--ease-standard);
+}
+
+/* Inside the bar a ring flush with the segment reads better than one floating over its neighbors. */
+.segment:focus-visible {
+  outline-offset: 0;
+}
+
+@media (hover: hover) {
+  .segment:hover {
+    background: color-mix(in srgb, var(--color-accent) 5%, transparent);
+  }
+}
+
+/* Only Logs holds a selected state, a quiet ink tint that reads on glass where a white fill would vanish. */
+.selectable[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+}
+
+.segment:active {
+  background: color-mix(in srgb, var(--color-accent) 11%, transparent);
+}
+
+.segment:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.icon {
+  width: 36px;
+  padding: 0;
+}
+
+/* The main controls share one width, so no control reads as more important than another; docked, they split the bar evenly. */
+.wide {
+  flex: 1 1 0;
+  gap: 6px;
+  width: 112px;
+  padding: 0 10px;
+}
+
+/* Darkened from --color-danger so the label meets AA on the glass. */
+.danger,
+.danger:active {
+  background: color-mix(in srgb, var(--color-danger) 10%, transparent);
+  color: color-mix(in srgb, var(--color-danger) 72%, var(--color-accent));
+}
+
+.chevron {
+  width: 10px;
+  height: 10px;
+  margin-right: -2px;
+  transition: transform 0.2s var(--ease-standard);
+}
+
+[aria-expanded="true"] > .chevron {
+  transform: rotate(180deg);
+}
+
+.chevronLarge {
+  width: 14px;
+  height: 14px;
+  margin-right: 0;
+}
+
+/* COMPACT_QUERY in control-bar.tsx: the segments fold into one menu button. */
+.compactOnly {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .compactOnly {
+    display: inline-flex;
+  }
+
+  .wideOnly {
+    display: none;
+  }
+}
+
+.menu {
+  width: 260px;
+  max-width: 100%;
+  max-height: calc(100dvh - 96px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 6px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-glass-menu);
+  transform-origin: top center;
+}
+
+.item {
+  display: block;
+  width: 100%;
+  padding: 7px 10px;
+  border-radius: 10px;
+  text-align: left;
+  cursor: pointer;
+  outline-offset: -2px;
+  transition: background-color 0.14s var(--ease-standard);
+}
+
+@media (hover: hover) {
+  .item:hover {
+    background: color-mix(in srgb, var(--color-accent) 6%, transparent);
+  }
+}
+
+.item:focus-visible {
+  background: color-mix(in srgb, var(--color-accent) 6%, transparent);
+}
+
+.item:active {
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 40px;
+  color: var(--color-accent);
+  font-size: 14px;
+  font-weight: 590;
+  letter-spacing: -0.2px;
+}
+
+.action[aria-disabled="true"] {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.check {
+  width: 16px;
+  height: 16px;
+}
+
+/* Sound, while its volumes hang below it: the same quiet tint as a selected Logs. */
+.segment[data-open] {
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+}
+
+/* The two volumes, under Sound. The bar's column places it; control-bar.tsx centers it on the segment. */
+.volumePanel {
+  position: absolute;
+  top: 52px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 260px;
+  padding: 14px 16px 12px;
+  border-radius: 20px;
+  box-shadow: var(--shadow-glass-liquid);
+  transform-origin: top center;
+}
+
+/* In the folded menu, the volumes sit between the toggles like two more rows. */
+.volumes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 8px 10px 10px;
+}

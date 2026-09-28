@@ -1,0 +1,97 @@
+/*
+  The live call transcript, in the canvas left of the device. It spans the gutter between the canvas edge and
+  the device (the device's width worked out as .slot sizes it in stage.module.css), less an inset on both sides
+  so the words clear the canvas edge and the phone, and measures itself so a gutter too narrow to read in shows nothing.
+*/
+.transcript {
+  --device: calc(min(100cqh - var(--top) - var(--pad), (100cqw - 2 * var(--pad)) * 906 / 435) * 435 / 906);
+  --inset: clamp(40px, 4.5cqw, 96px);
+  position: absolute;
+  top: var(--top);
+  bottom: 16%;
+  left: var(--inset);
+  width: calc((100cqw - var(--device)) / 2 - 2 * var(--inset));
+  container-type: inline-size;
+  pointer-events: none;
+  /* The newest line sits low; as the call goes on the earlier ones climb into this fade and go. */
+  mask-image: linear-gradient(to bottom, transparent, #000 50%);
+  transition: opacity 0.6s var(--ease-standard);
+}
+
+/* The call ended: the last words go with it. */
+.transcript[data-ended] {
+  opacity: 0;
+}
+
+.lines {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 16px;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* The mark's color as it shows on the page; only the mask above ever lightens it. The caller's words carry the weight. */
+.line {
+  color: var(--color-mark-solid);
+  font-size: clamp(20px, 8cqi, 32px);
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+  font-weight: 400;
+  text-wrap: pretty;
+}
+
+.line[data-role="user"] {
+  font-weight: 700;
+}
+
+/*
+  A word develops rather than pops: a soft-edged gradient sweeps across it left to right while it comes into focus
+  and settles up a hair. The mask is three times the word's width, solid then clear, so sliding it from its clear end
+  to its solid end is the sweep; at rest it is solid over the whole word. It is readable within a word's length of
+  speech, so the caption reads with the voice rather than after it.
+*/
+.word {
+  display: inline-block;
+  mask-image: linear-gradient(to right, #000 33%, transparent 67%);
+  mask-size: 300% 100%;
+  mask-position: 0 0;
+  animation: develop 0.36s var(--ease-house) backwards;
+  animation-delay: calc(var(--i, 0) * 30ms);
+}
+
+@keyframes develop {
+  from {
+    mask-position: 100% 0;
+    opacity: 0;
+    filter: blur(4px);
+    translate: 0 0.14em;
+  }
+  35% {
+    opacity: 1;
+  }
+}
+
+@container (width < 180px) {
+  .lines {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .transcript {
+    transition: none;
+  }
+
+  .word {
+    animation-name: none;
+  }
+}
+
+/* On a real phone (HANDHELD_QUERY in lib/client/stage-ui.tsx): there is no stage to write on. */
+@media (pointer: coarse) and (max-width: 500px) {
+  .transcript {
+    display: none;
+  }
+}

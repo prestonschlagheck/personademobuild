@@ -1,0 +1,40 @@
+/* The device fills the box the stage gives it. Geometry is Persona's mockup over the 435 x 906 frame. */
+.device {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.screen {
+  position: absolute;
+  left: 4.318%;
+  top: 2.291%;
+  width: 91.361%;
+  height: 95.366%;
+  border-radius: 14.18% / 6.521%;
+  overflow: clip;
+  isolation: isolate;
+  container-type: size;
+  background: var(--color-surface);
+}
+
+/* The frame sits over the screen edges so the bezel and the island stay on top of the app. */
+.frame {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* iOS safe areas in points. The app reads these instead of assuming a status bar or home indicator. */
+.root {
+  position: relative;
+  height: 100%;
+  overflow: clip;
+  --safe-top: calc(var(--pt) * 62);
+  --safe-bottom: calc(var(--pt) * 34);
+}
+

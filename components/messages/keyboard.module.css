@@ -1,0 +1,27 @@
+@reference "../../app/globals.css";
+
+/* Persona's iOS 26 keyboard art, sliding up on the iOS sheet curve while the field has focus. */
+.keyboard {
+  transform: translateY(100%);
+  visibility: hidden;
+  transition:
+    transform 0.32s --theme(--ease-standard inline),
+    visibility 0s linear 0.32s;
+}
+
+.keyboard[data-open] {
+  transform: none;
+  visibility: visible;
+  transition: transform 0.32s --theme(--ease-standard inline);
+}
+
+.art {
+  aspect-ratio: 402 / 342;
+  background: url("/ios/keyboard.svg") center / 100% 100% no-repeat;
+}
+
+.popup {
+  position: absolute;
+  pointer-events: none;
+  filter: drop-shadow(0 calc(var(--pt) * 1) calc(var(--pt) * 2.5) rgb(0 0 0 / 0.3));
+}

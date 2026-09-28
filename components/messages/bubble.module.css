@@ -1,0 +1,174 @@
+@reference "../../app/globals.css";
+
+/*
+  iMessage bubbles, matched to Persona's mockup (.imsg-bubble in their site CSS), in points.
+  The user gradient is pinned to the screen, not the bubble: --screen-h and --bg-y are set by the thread.
+*/
+.bubble {
+  position: relative;
+  isolation: isolate;
+  border-radius: calc(var(--pt) * 20);
+  padding: calc(var(--pt) * 8.5) calc(var(--pt) * 12);
+}
+
+.user {
+  background-image: linear-gradient(--theme(--color-ios-blue-top inline), --theme(--color-ios-blue-bottom inline));
+  background-size: 100% var(--screen-h, 100%);
+  background-position: 0 var(--bg-y, 0);
+}
+
+.agent {
+  background: --theme(--color-ios-gray inline);
+}
+
+/*
+  The tail is its own piece, cut from Persona's bubble mask, laid over the bottom corner the way iMessage draws it,
+  so a short text like "hi" keeps its natural width and fully round corners. The piece runs from the bubble's top
+  so the user gradient lines up with the bubble's own.
+*/
+.tail::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  bottom: calc(var(--pt) * -7);
+  width: calc(var(--pt) * 24);
+  mask-repeat: no-repeat;
+  mask-size: calc(var(--pt) * 24) calc(var(--pt) * 18);
+}
+
+.user.tail::before {
+  right: 0;
+  background-image: linear-gradient(--theme(--color-ios-blue-top inline), --theme(--color-ios-blue-bottom inline));
+  background-size: 100% var(--screen-h, 100%);
+  background-position: 0 var(--bg-y, 0);
+  mask-image: url("/ios/bubble-tail-right.svg");
+  mask-position: right bottom;
+}
+
+/* Messages draws a shared location on the bubble gray even on the sender's side. */
+.sentCard {
+  background: --theme(--color-ios-gray inline);
+}
+
+.sentCard.tail::before {
+  right: 0;
+  background: --theme(--color-ios-gray inline);
+  mask-image: url("/ios/bubble-tail-right.svg");
+  mask-position: right bottom;
+}
+
+.agent.tail::before {
+  left: 0;
+  background: --theme(--color-ios-gray inline);
+  mask-image: url("/ios/bubble-tail-left.svg");
+  mask-position: left bottom;
+}
+
+/*
+  A sent text rises out of the composer (Persona's popin). A received one is delivered as iMessage does it:
+  the bubble springs out of its tail corner with a slight overshoot, while the thread above slides up.
+  The curve is an iOS spring (response 0.42s, damping 0.78) sampled into linear(); older browsers get --ease-house.
+*/
+.rise {
+  transform-origin: 100% 100%;
+  animation: rise 0.45s --theme(--ease-house inline) both;
+}
+
+.pop {
+  transform-origin: 0 100%;
+  animation: pop 0.55s --theme(--ease-house inline) both;
+}
+
+@supports (animation-timing-function: linear(0, 1)) {
+  .pop {
+    animation-timing-function: linear(
+      0, 0.057, 0.188, 0.346, 0.503, 0.642, 0.758, 0.847, 0.913, 0.959, 0.989, 1.007,
+      1.016, 1.02, 1.02, 1.017, 1.014, 1.011, 1.008, 1.006, 1.004, 1.002, 1
+    );
+  }
+}
+
+.fade {
+  animation: fade 0.3s --theme(--ease-out inline) both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--pt) * 40)) scale(0.96);
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--pt) * 6)) scale(0.55);
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Tapback badges carry a ring in the thread background so they read as cut out of the bubble. */
+.badge {
+  box-shadow: 0 0 0 calc(var(--pt) * 2) var(--chat-bg);
+}
+
+/*
+  A quoted original above an inline reply, outlined at one even width: the body and its tail are each drawn twice,
+  first in the edge color (a ring round the body, a stroke twice the width round the tail), then in the chat
+  background on top, which leaves exactly the outer half of their joint outline showing.
+*/
+.quoteEdge {
+  --edge: #c4c4c9;
+  --edge-width: calc(var(--pt) * 1);
+  /* The tail is drawn in its own units, 24 of them to 19 pt. */
+  --edge-units: calc(24 / 19);
+  position: absolute;
+  inset: 0;
+}
+
+.quoteEdge[data-side="user"] {
+  --edge: rgb(10 132 255 / 0.55);
+}
+
+.quoteBody {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--pt) * 15);
+  background: var(--chat-bg);
+}
+
+.quoteBody[data-ring] {
+  background: var(--edge);
+  box-shadow: 0 0 0 var(--edge-width) var(--edge);
+}
+
+/* The bubble's own tail at 19 of its 24 points, hanging 5.5 pt below the body like the tail piece above. */
+.quoteTail {
+  position: absolute;
+  bottom: calc(var(--pt) * -5.5);
+  width: calc(var(--pt) * 19);
+  height: calc(var(--pt) * 14.25);
+  overflow: visible;
+  fill: var(--chat-bg);
+}
+
+.quoteTail[data-ring] {
+  fill: var(--edge);
+  stroke: var(--edge);
+  stroke-width: calc(2 * var(--edge-units));
+  stroke-linejoin: round;
+}
+
+/* The thread line: as thick as iMessage draws it, rounded, in the gray of a bubble's edge. */
+.replyLine {
+  stroke: #c4c4c9;
+  stroke-width: calc(var(--pt) * 3.25);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

@@ -1,0 +1,162 @@
+/* One header row (20px down, the 44px control bar, 12px clear), then the device at --top. */
+.stage {
+  --bar-top: 20px;
+  --bar: 44px;
+  --top: 76px;
+  --pad: 24px;
+  /* The docked logs panel and the control bar it hangs from share this width: three 112px segments, their gaps and padding. */
+  --dock-width: 348px;
+  position: relative;
+  display: flex;
+  height: 100dvh;
+  /* clip, not hidden: the oversized mark must never make the stage a scroll container that focus can scroll. */
+  overflow: clip;
+  background: var(--color-page);
+}
+
+/*
+  The docked logs panel's share of the width, so the device keeps clear of it and the mark can find the device.
+  The same states as .dock. Registered so the device eases when the panel opens or closes; the mark's own
+  position is never transitioned, so it tracks a window resize exactly.
+*/
+@property --dock {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+.stage {
+  transition: --dock 0.32s var(--ease-standard);
+}
+
+.stage[data-dock="open"] {
+  --dock: calc(var(--dock-width) + var(--pad));
+}
+
+/*
+  Persona's mark, huge and tone on tone, behind everything. Its center sits halfway between the device's right
+  edge and the window's, which runs its loops up under the glass control bar. Below --hold the window stops
+  counting, so the mark keeps its distance from the right edge and slides in behind the device instead.
+*/
+.mark {
+  --hold: 960px;
+  --window: max(100vw, var(--hold));
+  --device: min((100dvh - var(--top) - var(--pad)) * 435 / 899.635, var(--window) - 2 * var(--pad) - var(--dock));
+  --shift: max(0px, var(--device) / 2 + var(--dock) + var(--pad) - var(--window) / 2);
+  --center: calc((var(--window) / 2 - var(--device) / 2 + var(--shift)) / 2);
+  position: absolute;
+  right: calc(var(--center) - 110vh * 23.6813 / 23 / 2);
+  bottom: -8vh;
+  height: 110vh;
+  width: auto;
+  color: var(--color-mark);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage {
+    transition: none;
+  }
+}
+
+.canvas {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  container-type: size;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+/* The wordmark sits halfway between flush with the control bar's top edge and centered on its line. */
+.brand {
+  position: absolute;
+  top: calc(var(--bar-top) + (var(--bar) - 22px) / 4);
+  left: 24px;
+  z-index: 1;
+  line-height: 0;
+}
+
+.wordmark {
+  height: 22px;
+  width: auto;
+  color: var(--color-accent);
+}
+
+/* The control bar top right; its menu and caption drop below it. */
+.controls {
+  position: absolute;
+  top: var(--bar-top);
+  right: var(--pad);
+  left: calc(var(--pad) + 127px);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.controls > * {
+  max-width: 100%;
+  pointer-events: auto;
+}
+
+/*
+  The device fills the height under the header row with the bottom margin, or the width left of an open logs
+  panel on narrow windows. It stays centered in the window, and slides left only as far as it must to clear the panel.
+*/
+.slot {
+  --ratio: calc(906 / 435);
+  /* The frame's ink ends 6.365 of its 906 units above the box, so the bezel itself lands on the bottom margin, level with the logs panel. */
+  --width: min((100cqh - var(--top) - var(--pad)) * 435 / 899.635, 100cqw - 2 * var(--pad) - var(--dock));
+  width: var(--width);
+  aspect-ratio: 435 / 906;
+  margin-top: var(--top);
+  translate: calc(-1 * max(0px, var(--width) / 2 + var(--dock) + var(--pad) - 50cqw)) 0;
+}
+
+/* The docked state panel, hanging from the control bar with no gap: the bar's width, square where they meet. Over the canvas, not beside it. */
+.dock {
+  position: absolute;
+  top: calc(var(--bar-top) + var(--bar));
+  right: var(--pad);
+  bottom: var(--pad);
+  z-index: 1;
+  display: none;
+  flex-direction: column;
+  width: var(--dock-width);
+}
+
+@media (min-width: 1024px) {
+  .dock {
+    display: flex;
+  }
+}
+
+/* Before hydration the panel is collapsed, as it is on every load. */
+.dock[data-default] {
+  display: none;
+}
+
+/* On a real phone (HANDHELD_QUERY in lib/client/stage-ui.tsx): only the device, as large as the window allows. */
+@media (pointer: coarse) and (max-width: 500px) {
+  .mark,
+  .brand,
+  .controls {
+    display: none;
+  }
+
+  .canvas {
+    align-items: center;
+    padding: max(8px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom))
+      max(8px, env(safe-area-inset-left));
+  }
+
+  .slot {
+    --width: min(100cqh * 435 / 906, 100cqw);
+    margin: 0;
+    translate: none;
+  }
+}
